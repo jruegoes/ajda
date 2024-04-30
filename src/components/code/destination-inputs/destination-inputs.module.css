@@ -1,0 +1,34 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    width: 100%;
+    flex-direction: column;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 330px !important;
+}
+
+.submitButton {
+    width: 300px;
+}
+
+.title {
+    color: #fca311 !important;
+    font-size: x-large;
+    margin-bottom: 6px;
+}
+
+.inputTitle {
+    color: #14213d;
+    font-size: large;
+}
+

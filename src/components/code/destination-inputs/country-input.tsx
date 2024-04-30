@@ -5,6 +5,8 @@ import { AutoselectInput } from "@/components/code/autoselect-input";
 import { countries } from "@/lib/constants/countries";
 import { currencies } from "@/lib/constants/currencies";
 import { languages } from "@/lib/constants/languages";
+import { Button } from "@/components/ui/button";
+import styles from './destination-inputs.module.css'
 
 type CountryInputs = {
   country: string;
@@ -15,7 +17,7 @@ type CountryInputs = {
 
 export default function CountryInput(props: {
   onValueChange: (value: any) => void;
-  defaultValues?: any
+  defaultValues?: any;
 }) {
   const {
     register,
@@ -34,43 +36,61 @@ export default function CountryInput(props: {
   };
 
   return (
-    <>
+    <div className={styles.container}>
+      <div className={styles.title}>Dodaj podatke o državi in mestu destinacije</div>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Dropdown selects */}
-        <AutoselectInput
-          onValueChange={(value: string) =>
-            handleValueFromList(value, "country")
-          }
-          list={countries}
-          defaultValue={props.defaultValues.country}
-        />
 
-        <AutoselectInput
-          onValueChange={(value: string) =>
-            handleValueFromList(value, "language")
-          }
-          list={languages}
-          defaultValue={props.defaultValues.language}
-        />
+        <div className={styles.inputContainer}>
+          <div className={styles.inputTitle}>Izberi državo</div>
+          <AutoselectInput
+            onValueChange={(value: string) =>
+              handleValueFromList(value, "country")
+            }
+            list={countries}
+            defaultValue={props.defaultValues.country}
+          />
+        </div>
 
-        <AutoselectInput
-          onValueChange={(value: string) =>
-            handleValueFromList(value, "currency")
-          }
-          list={currencies}
-          defaultValue={props.defaultValues.currency}
-        />
+        <div className={styles.inputContainer}>
+          <div className={styles.inputTitle}>Izberi jezik</div>
+          <AutoselectInput
+            onValueChange={(value: string) =>
+              handleValueFromList(value, "language")
+            }
+            list={languages}
+            defaultValue={props.defaultValues.language}
+          />
+        </div>
 
-        <Input
-          placeholder="mesto oz. destinacija"
-          {...register("cityArea", { required: true })}
-          defaultValue={props.defaultValues.cityArea}
-        />
+        <div className={styles.inputContainer}>
+          <div className={styles.inputTitle}>Izberi valuto</div>
+          <AutoselectInput
+            onValueChange={(value: string) =>
+              handleValueFromList(value, "currency")
+            }
+            list={currencies}
+            defaultValue={props.defaultValues.currency}
+          />
+        </div>
 
-        {errors.cityArea && <span>Vpiši mesto oz. ime destinacije</span>}
+        <div className={styles.inputContainer}>
+          <div>Vpiši ime mesta oz. destinacije</div>
+          <Input
+            className={styles.input}
+            placeholder="mesto oz. destinacija"
+            {...register("cityArea", { required: true })}
+            defaultValue={props.defaultValues.cityArea}
+          />
 
-        <input type="submit" />
+          {errors.cityArea && <span>Vpiši mesto oz. ime destinacije</span>}
+        </div>
+        <div className="styles.confirm">
+          <Button>
+            <input className={styles.submitButton} type="submit" />
+          </Button>
+        </div>
       </form>
-    </>
+    </div>
   );
 }

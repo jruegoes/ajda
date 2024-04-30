@@ -1,8 +1,16 @@
 "use client";
 import CountryInput from "@/components/code/destination-inputs/country-input";
 import MustSeeAttractionsInput from "@/components/code/destination-inputs/must-see-attractions";
-import { Attraction, Country, Desinations, defaultValues } from "@/lib/constants/interfaces";
+import { Button } from "@/components/ui/button";
+import {
+  Attraction,
+  Country,
+  Desinations,
+  defaultValues,
+} from "@/lib/constants/interfaces";
 import { useState } from "react";
+import { Separator } from "@/components/ui/separator";
+import styles from './add-destination.module.css'
 
 export default function App() {
   const [currentObject, setCurrentObject] = useState({
@@ -62,38 +70,50 @@ export default function App() {
 
   return (
     <>
+      <div className={styles.title}>🍹⛱️Dodaj novo destinacjo🌴🌊</div>
       <CountryInput
         onValueChange={(value: Country) =>
           handleFormInputs("country", value, false)
         }
         defaultValues={defaultValues.country}
       />
+      <Separator />
+
       {currentObject.mustSeeAttractions.map((attraction, index) => (
         <>
-          <MustSeeAttractionsInput
-            key={index}
-            onValueChange={(value: Attraction) =>
-              handleFormInputs("mustSeeAttractions", value, true, index)
-            }
-            defaultValues={attraction}
-          />
-          <button
-            key={index + 1}
-            onClick={() => {
-              deleteAttribute(index, "mustSeeAttractions");
-            }}
-          >
-            Remove that bitch
-          </button>
+          <div className={styles.attraction}>
+            <Button
+              key={index + 1}
+              onClick={() => {
+                deleteAttribute(index, "mustSeeAttractions");
+              }}
+              variant={"destructive"}
+              className={styles.deleteAttraction}
+            >
+              Odstrani atrakcijo {index + 1}
+            </Button>
+            <MustSeeAttractionsInput
+              key={index}
+              onValueChange={(value: Attraction) =>
+                handleFormInputs("mustSeeAttractions", value, true, index)
+              }
+              defaultValues={attraction}
+              index={index}
+            />
+          </div>
+          <Separator />
         </>
       ))}
-      <button
-        onClick={() => {
-          addAttribute("mustSeeAttractions");
-        }}
-      >
-        Add Another Must-See Attraction
-      </button>
+      <div className={styles.attraction}>
+        <Button
+        variant={"secondary"}
+          onClick={() => {
+            addAttribute("mustSeeAttractions");
+          }}
+        >  
+          Dodaj atrakcijo 🏛️
+        </Button>
+      </div>
     </>
   );
 }
