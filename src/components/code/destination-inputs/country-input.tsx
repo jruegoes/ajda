@@ -7,12 +7,14 @@ import { currencies } from "@/lib/constants/currencies";
 import { languages } from "@/lib/constants/languages";
 import { Button } from "@/components/ui/button";
 import styles from './destination-inputs.module.css'
+import { Textarea } from "@/components/ui/textarea";
 
 type CountryInputs = {
   country: string;
   language: string;
   currency: string;
   cityArea: string;
+  description: string;
 };
 
 export default function CountryInput(props: {
@@ -75,12 +77,23 @@ export default function CountryInput(props: {
         </div>
 
         <div className={styles.inputContainer}>
-          <div>Vpiši ime mesta oz. destinacije</div>
+          <div>Ime mesta oz. destinacije</div>
           <Input
             className={styles.input}
             placeholder="mesto oz. destinacija"
             {...register("cityArea", { required: true })}
             defaultValue={props.defaultValues.cityArea}
+          />
+
+          {errors.cityArea && <span>Vpiši mesto oz. ime destinacije</span>}
+        </div>
+        <div className={styles.inputContainer}>
+          <div>Opis države</div>
+          <Textarea
+            className={styles.input}
+            placeholder="opis"
+            {...register("description", { required: true })}
+            defaultValue={props.defaultValues.description}
           />
 
           {errors.cityArea && <span>Vpiši mesto oz. ime destinacije</span>}

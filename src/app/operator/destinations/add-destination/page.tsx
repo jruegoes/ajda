@@ -3,6 +3,7 @@ import CountryInput from "@/components/code/destination-inputs/country-input";
 import MustSeeAttractionsInput from "@/components/code/destination-inputs/must-see-attractions";
 import { Button } from "@/components/ui/button";
 import {
+  Activity,
   Attraction,
   Country,
   Desinations,
@@ -10,63 +11,103 @@ import {
 } from "@/lib/constants/interfaces";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
-import styles from './add-destination.module.css'
+import styles from "./add-destination.module.css";
 
 export default function App() {
   const [currentObject, setCurrentObject] = useState({
     country: defaultValues.country,
     mustSeeAttractions: defaultValues.mustSeeAttractions,
+    activities: defaultValues.activities,
   });
 
   const handleFormInputs = (
     property: keyof Desinations,
     value: any,
     nested: boolean,
+    subProperty?: string,
     index?: number
   ) => {
     setCurrentObject((prevObject: any) => {
       const updatedObject = { ...prevObject };
-
-      // If the property doesn't exist yet, initialize it
       if (!updatedObject[property]) {
-        if (nested) {
-          updatedObject[property] = [];
+        updatedObject[property] = nested ? [] : {};
+      }
+
+      if (subProperty) {
+        if (!updatedObject[property][subProperty]) {
+          updatedObject[property][subProperty] = nested ? [] : {};
+        }
+
+        // Update the specific item in the array if applicable
+        if (index !== undefined && nested) {
+          (updatedObject[property][subProperty] as any[])[index] = value;
         } else {
-          updatedObject[property] = {};
+          updatedObject[property][subProperty] = value;
+        }
+      } else {
+        // Update the specific item in the array if applicable
+        if (index !== undefined && nested) {
+          (updatedObject[property] as any[])[index] = value;
+        } else {
+          updatedObject[property] = value;
         }
       }
-
-      // Update the specific item in the array if applicable
-      if (index !== undefined && nested) {
-        (updatedObject[property] as any[])[index] = value; // casting to any[] since TypeScript can't infer the array type
-      } else {
-        updatedObject[property] = value;
-      }
-
       return updatedObject;
     });
   };
 
-  const addAttribute = (attributeName: string) => {
+  // const addAttribute = (attributeName: string) => {
+  //   setCurrentObject((prevObject: any) => ({
+  //     ...prevObject,
+  //     [attributeName]: [
+  //       ...(prevObject[attributeName] || []),
+  //       (defaultValues as { [key: string]: any })[attributeName][0],
+  //     ],
+  //   }));
+  // };
+
+  const addAttribute = (
+    parentAttributeName: string,
+    nestedAttributeName: string
+  ) => {
     setCurrentObject((prevObject: any) => ({
       ...prevObject,
-      [attributeName]: [
-        ...(prevObject[attributeName] || []),
-        (defaultValues as { [key: string]: any })[attributeName][0],
-      ],
+      [parentAttributeName]: {
+        ...prevObject[parentAttributeName],
+        [nestedAttributeName]: [
+          ...(prevObject[parentAttributeName][nestedAttributeName] || []),
+          (defaultValues as { [key: string]: any })[parentAttributeName][
+            nestedAttributeName
+          ][0],
+        ],
+      },
     }));
   };
 
-  const deleteAttribute = (indexToDelete: number, attributeName: string) => {
+  const deleteAttribute = (
+    indexToDelete: number,
+    attributeName: string,
+    attributeName2: string
+  ) => {
     setCurrentObject((prevObject: any) => ({
       ...prevObject,
-      [attributeName]: prevObject[attributeName].filter(
-        (_: any, index: number) => index !== indexToDelete
-      ),
+      [attributeName]: {
+        ...prevObject[attributeName],
+        [attributeName2]: prevObject[attributeName][attributeName2].filter(
+          (_: any, index: number) => index !== indexToDelete
+        ),
+      },
     }));
   };
 
-  console.log(currentObject);
+  // const deleteAttribute = (indexToDelete: number, attributeName: string) => {
+  //   setCurrentObject((prevObject: any) => ({
+  //     ...prevObject,
+  //     [attributeName]: prevObject[attributeName].filter(
+  //       (_: any, index: number) => index !== indexToDelete
+  //     ),
+  //   }));
+  // };
 
   return (
     <>
@@ -77,15 +118,17 @@ export default function App() {
         }
         defaultValues={defaultValues.country}
       />
-      <Separator />
-
-      {currentObject.mustSeeAttractions.map((attraction, index) => (
+      <Separator className={styles.separator} />
+      <div className={styles.sectionDescription}>
+        {currentObject.mustSeeAttractions.description}
+      </div>
+      {currentObject.mustSeeAttractions.attractions.map((attraction, index) => (
         <>
           <div className={styles.attraction}>
             <Button
               key={index + 1}
               onClick={() => {
-                deleteAttribute(index, "mustSeeAttractions");
+                deleteAttribute(index, "mustSeeAttractions", "attractions");
               }}
               variant={"destructive"}
               className={styles.deleteAttraction}
@@ -95,25 +138,81 @@ export default function App() {
             <MustSeeAttractionsInput
               key={index}
               onValueChange={(value: Attraction) =>
-                handleFormInputs("mustSeeAttractions", value, true, index)
+                handleFormInputs(
+                  "mustSeeAttractions",
+                  value,
+                  true,
+                  "attractions",
+                  index
+                )
               }
               defaultValues={attraction}
               index={index}
             />
           </div>
-          <Separator />
+          <Separator className={styles.separator} />
         </>
       ))}
       <div className={styles.attraction}>
         <Button
-        variant={"secondary"}
+          variant={"secondary"}
           onClick={() => {
-            addAttribute("mustSeeAttractions");
+            addAttribute("mustSeeAttractions", "attractions");
           }}
-        >  
-          Dodaj atrakcijo 🏛️
+        >
+          Dodaj dejavnost 🏛️
         </Button>
       </div>
+      <Separator className={styles.separator} />
+
+{/* DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST */}
+      <div className={styles.sectionDescription}>
+        {currentObject.activities.description}
+      </div>
+      {currentObject.activities.activities.map((attraction, index) => (
+        <>
+          <div className={styles.attraction}>
+            <Button
+              key={index + 1}
+              onClick={() => {
+                deleteAttribute(index, "activities", "activities");
+              }}
+              variant={"destructive"}
+              className={styles.deleteAttraction}
+            >
+              Odstrani dejavnost {index + 1}
+            </Button>
+            <MustSeeAttractionsInput
+              key={index}
+              onValueChange={(value: Activity) =>
+                handleFormInputs(
+                  "activities",
+                  value,
+                  true,
+                  "activities",
+                  index
+                )
+              }
+              defaultValues={attraction}
+              index={index}
+            />
+          </div>
+          <Separator className={styles.separator} />
+        </>
+      ))}
+      <div className={styles.attraction}>
+        <Button
+          variant={"secondary"}
+          onClick={() => {
+            addAttribute("activities", "activities");
+          }}
+        >
+          Dodaj dejavnost 🏛️
+        </Button>
+      </div>
+      <Separator className={styles.separator} />
+
+      
     </>
   );
 }
