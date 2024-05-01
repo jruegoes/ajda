@@ -1,7 +1,6 @@
 "use client";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import styles from './destination-inputs.module.css'
 
 type Attractions = {
@@ -10,7 +9,7 @@ type Attractions = {
   image: string;
 };
 
-export default function MustSeeAttractionsInput(props: {
+export default function NestedInput(props: {
   onValueChange: (value: any) => void;
   defaultValues?: any;
   index?: number
@@ -30,14 +29,13 @@ export default function MustSeeAttractionsInput(props: {
        Podatki o atrakciji #{(props.index ?? 1) + 1}
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Dropdown selects */}
-
         <div className={styles.inputContainer}>
           <div>Ime atrakcije</div>
           <Input
             placeholder="ime atrakcije"
             {...register("name", { required: true })}
             defaultValue={props.defaultValues.name}
+            onBlur={handleSubmit(onSubmit)}
           />
           {errors.name && <span>Dodaj ime atrakcije</span>}
         </div>
@@ -48,6 +46,7 @@ export default function MustSeeAttractionsInput(props: {
             placeholder="opis"
             {...register("description", { required: true })}
             defaultValue={props.defaultValues.description}
+            onBlur={handleSubmit(onSubmit)}
           />
           {errors.name && <span>Dodaj opis</span>}
         </div>
@@ -58,15 +57,10 @@ export default function MustSeeAttractionsInput(props: {
             placeholder="link do slike"
             {...register("image", { required: true })}
             defaultValue={props.defaultValues.image}
+            onBlur={handleSubmit(onSubmit)}
           />
 
           {errors.name && <span>Dodaj link do slike</span>}
-        </div>
-
-        <div className="styles.confirm">
-          <Button>
-            <input className={styles.submitButton} type="submit" />
-          </Button>
         </div>
       </form>
     </div>

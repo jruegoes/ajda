@@ -29,10 +29,35 @@ export interface Activities {
     activities: Activity[]
 }
 
+export interface Shopping {
+  description: string,
+  name: string,
+  link: string,
+  image: string
+}
+
+export interface Shoppings {
+  description: string;
+  shoppings: Shopping[]
+}
+
+export interface LanguageTip {
+  description: string,
+  name: string,
+  image: string,
+}
+
+export interface LanguageTips {
+  description: string;
+  languageTips: LanguageTip[]
+}
+
 export type Desinations = {
     country: Country,
     mustSeeAttractions: Attractions,
     activities: Activities
+    shoppings: Shoppings
+    languageTips: LanguageTips
 
 }
 
@@ -62,6 +87,38 @@ export const defaultValues: Desinations = {
     activities: {
       description: 'Tukaj je veliko za početi',
       activities: [
+        {
+          name: 'skakanje v vodo',
+          description: 'big skakenje v vodo',
+          image:'hehe siu'
+        },
+        {
+          name: 'skakanje v vodo 2',
+          description: 'big skakenje v vodo 2',
+          image:'hehe siu 2'
+        }
+      ]
+    },
+    shoppings: {
+      description: 'Tukaj je veliko za početi',
+      shoppings: [
+        {
+          name: 'skakanje v vodo',
+          description: 'big skakenje v vodo',
+          link: 'www.btc.si',
+          image:'hehe siu'
+        },
+        {
+          name: 'skakanje v vodo 2',
+          description: 'big skakenje v vodo 2',
+          link: 'www.hofer.si',
+          image:'hehe siu 2'
+        }
+      ]
+    },
+    languageTips: {
+      description: 'Tukaj je veliko za početi',
+      languageTips: [
         {
           name: 'skakanje v vodo',
           description: 'big skakenje v vodo',

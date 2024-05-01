@@ -1,10 +1,12 @@
 "use client";
 import CountryInput from "@/components/code/destination-inputs/country-input";
-import MustSeeAttractionsInput from "@/components/code/destination-inputs/must-see-attractions";
+import NestedInput from "@/components/code/destination-inputs/nested-input";
 import { Button } from "@/components/ui/button";
 import {
+  Activities,
   Activity,
   Attraction,
+  Attractions,
   Country,
   Desinations,
   defaultValues,
@@ -12,6 +14,7 @@ import {
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import styles from "./add-destination.module.css";
+import DescriptionInput from "@/components/code/destination-inputs/description-input";
 
 export default function App() {
   const [currentObject, setCurrentObject] = useState({
@@ -77,7 +80,7 @@ export default function App() {
         [nestedAttributeName]: [
           ...(prevObject[parentAttributeName][nestedAttributeName] || []),
           (defaultValues as { [key: string]: any })[parentAttributeName][
-            nestedAttributeName
+          nestedAttributeName
           ][0],
         ],
       },
@@ -109,6 +112,8 @@ export default function App() {
   //   }));
   // };
 
+  console.log(currentObject)
+
   return (
     <>
       <div className={styles.title}>🍹⛱️Dodaj novo destinacjo🌴🌊</div>
@@ -119,8 +124,14 @@ export default function App() {
         defaultValues={defaultValues.country}
       />
       <Separator className={styles.separator} />
+
+      {/* MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS  */}
+
       <div className={styles.sectionDescription}>
-        {currentObject.mustSeeAttractions.description}
+        <DescriptionInput onValueChange={(value: Attractions) =>
+          handleFormInputs("mustSeeAttractions", value, false, "description")
+        }
+          defaultValues={currentObject.mustSeeAttractions.description} />
       </div>
       {currentObject.mustSeeAttractions.attractions.map((attraction, index) => (
         <>
@@ -135,7 +146,7 @@ export default function App() {
             >
               Odstrani atrakcijo {index + 1}
             </Button>
-            <MustSeeAttractionsInput
+            <NestedInput
               key={index}
               onValueChange={(value: Attraction) =>
                 handleFormInputs(
@@ -160,14 +171,17 @@ export default function App() {
             addAttribute("mustSeeAttractions", "attractions");
           }}
         >
-          Dodaj dejavnost 🏛️
+          Dodaj atrakcijo 🏛️
         </Button>
       </div>
       <Separator className={styles.separator} />
 
-{/* DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST */}
+      {/* DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST */}
       <div className={styles.sectionDescription}>
-        {currentObject.activities.description}
+        <DescriptionInput onValueChange={(value: Activities) =>
+          handleFormInputs("activities", value, false, "description")
+        }
+          defaultValues={currentObject.mustSeeAttractions.description} />
       </div>
       {currentObject.activities.activities.map((attraction, index) => (
         <>
@@ -182,7 +196,7 @@ export default function App() {
             >
               Odstrani dejavnost {index + 1}
             </Button>
-            <MustSeeAttractionsInput
+            <NestedInput
               key={index}
               onValueChange={(value: Activity) =>
                 handleFormInputs(
@@ -212,7 +226,7 @@ export default function App() {
       </div>
       <Separator className={styles.separator} />
 
-      
+
     </>
   );
 }
