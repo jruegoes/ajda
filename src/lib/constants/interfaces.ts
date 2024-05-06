@@ -1,9 +1,10 @@
-export interface Country {
+export interface BasicInfo {
     cityArea: string;
     country: string;
     language: string;
     currency: string;
     description: string;
+    image: string;
   }
   
 export interface Attraction {
@@ -52,22 +53,23 @@ export interface LanguageTips {
   languageTips: LanguageTip[]
 }
 
-export type Desinations = {
-    country: Country,
-    mustSeeAttractions: Attractions,
-    activities: Activities
-    shoppings: Shoppings
-    languageTips: LanguageTips
+export type Destination = {
+    basicInfo?: BasicInfo,
+    mustSeeAttractions?: Attractions,
+    activities?: Activities
+    shoppings?: Shoppings
+    languageTips?: LanguageTips
 
 }
 
-export const defaultValues: Desinations = {
-    country: {
+export const defaultValues: Destination = {
+  basicInfo: {
       cityArea: "Kamnik",
       country: "austria",
       language: "Danish",
       currency: "CHF",
-      description: 'big cuntry'
+      description: 'big cuntry',
+      image: 'www.google.slika.scomo.,nigge'
     },
     mustSeeAttractions: {
       description: 'tukaj je veliko atrakcij',
@@ -131,4 +133,31 @@ export const defaultValues: Desinations = {
         }
       ]
     }
+  };
+
+  export const defaultValuesEmpty: Destination = {
+    basicInfo: {
+        cityArea: "",
+        country: "",
+        language: "",
+        currency: "",
+        description: "",
+        image: ""
+      },
+      mustSeeAttractions: {
+        description: "",
+        attractions: []
+      },
+      activities: {
+        description: "",
+        activities: []
+      },
+      shoppings: {
+        description: "",
+        shoppings: []
+      },
+      languageTips: {
+        description: "",
+        languageTips: []
+      }
   };

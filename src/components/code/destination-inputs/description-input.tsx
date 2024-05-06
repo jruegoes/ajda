@@ -34,7 +34,7 @@ export default function DescriptionInput(props: {
                         className={styles.input}
                         placeholder="opis"
                         {...register("description", { required: true })}
-                        defaultValue={props.defaultValues.description}
+                        defaultValue={props.defaultValues?.description ?? ''}
                         onChange={handleInputChange}
                         onBlur={handleSubmit(onSubmit)} // Submit form when the input loses focus
                     />

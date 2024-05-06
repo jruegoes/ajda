@@ -1,5 +1,5 @@
 "use client";
-import CountryInput from "@/components/code/destination-inputs/country-input";
+import BasicInfoInput from "@/components/code/destination-inputs/basic-info-input";
 import NestedInput from "@/components/code/destination-inputs/nested-input";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,24 +7,54 @@ import {
   Activity,
   Attraction,
   Attractions,
-  Country,
-  Desinations,
+  BasicInfo,
+  Destination,
   defaultValues,
+  defaultValuesEmpty,
 } from "@/lib/constants/interfaces";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import styles from "./add-destination.module.css";
 import DescriptionInput from "@/components/code/destination-inputs/description-input";
+import {
+  addOrUpdateDestination,
+  deleteDestination,
+  getDestinations,
+} from "@/components/firebase/firebase";
+import { usePathname, useRouter } from "next/navigation";
 
-export default function App() {
-  const [currentObject, setCurrentObject] = useState({
-    country: defaultValues.country,
-    mustSeeAttractions: defaultValues.mustSeeAttractions,
-    activities: defaultValues.activities,
-  });
+export default function DestinationModule(props: {
+  id?: string;
+  value?: Destination;
+}) {
+  const [currentObject, setCurrentObject] = useState(
+    props.value ?? defaultValuesEmpty
+  );
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const goBack = () => {
+    router.back();
+  };
+
+  const onCreation = async () => {
+    const country = currentObject.basicInfo?.country;
+    const cityArea = currentObject.basicInfo?.cityArea;
+    await addOrUpdateDestination(currentObject, `${country}_${cityArea}`);
+
+    if (country && cityArea) {
+      const newUrl = `/${country}_${cityArea}`;
+
+      // Replace "add-destination" with the constructed URL
+      const replacedUrl = pathname.replace("add-destination", newUrl);
+
+      router.replace(replacedUrl);
+    }
+  };
 
   const handleFormInputs = (
-    property: keyof Desinations,
+    property: keyof Destination,
     value: any,
     nested: boolean,
     subProperty?: string,
@@ -80,7 +110,7 @@ export default function App() {
         [nestedAttributeName]: [
           ...(prevObject[parentAttributeName][nestedAttributeName] || []),
           (defaultValues as { [key: string]: any })[parentAttributeName][
-          nestedAttributeName
+            nestedAttributeName
           ][0],
         ],
       },
@@ -112,58 +142,75 @@ export default function App() {
   //   }));
   // };
 
-  console.log(currentObject)
-
   return (
     <>
       <div className={styles.title}>🍹⛱️Dodaj novo destinacjo🌴🌊</div>
-      <CountryInput
-        onValueChange={(value: Country) =>
-          handleFormInputs("country", value, false)
+      <Button onClick={goBack}>Pojdi nazaj</Button>
+
+      {props.id !== undefined && (
+        <Button
+          onClick={() => {
+            if (props.id) {
+              deleteDestination(props.id);
+              goBack();
+            }
+          }}
+        >
+          Zbriši destinacijo
+        </Button>
+      )}
+
+      <BasicInfoInput
+        onValueChange={(value: BasicInfo) =>
+          handleFormInputs("basicInfo", value, false)
         }
-        defaultValues={defaultValues.country}
+        defaultValues={currentObject.basicInfo}
       />
       <Separator className={styles.separator} />
 
       {/* MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS MUST SEE ATTRACTIONS  */}
 
       <div className={styles.sectionDescription}>
-        <DescriptionInput onValueChange={(value: Attractions) =>
-          handleFormInputs("mustSeeAttractions", value, false, "description")
-        }
-          defaultValues={currentObject.mustSeeAttractions.description} />
+        <DescriptionInput
+          onValueChange={(value: Attractions) =>
+            handleFormInputs("mustSeeAttractions", value, false, "description")
+          }
+          defaultValues={currentObject.mustSeeAttractions?.description}
+        />
       </div>
-      {currentObject.mustSeeAttractions.attractions.map((attraction, index) => (
-        <>
-          <div className={styles.attraction}>
-            <Button
-              key={index + 1}
-              onClick={() => {
-                deleteAttribute(index, "mustSeeAttractions", "attractions");
-              }}
-              variant={"destructive"}
-              className={styles.deleteAttraction}
-            >
-              Odstrani atrakcijo {index + 1}
-            </Button>
-            <NestedInput
-              key={index}
-              onValueChange={(value: Attraction) =>
-                handleFormInputs(
-                  "mustSeeAttractions",
-                  value,
-                  true,
-                  "attractions",
-                  index
-                )
-              }
-              defaultValues={attraction}
-              index={index}
-            />
+      {currentObject.mustSeeAttractions?.attractions.map(
+        (attraction: any, index: any) => (
+          <div key={index}>
+            <div className={styles.attraction} key={index}>
+              <Button
+                key={index + 1}
+                onClick={() => {
+                  deleteAttribute(index, "mustSeeAttractions", "attractions");
+                }}
+                variant={"destructive"}
+                className={styles.deleteAttraction}
+              >
+                Odstrani atrakcijo {index + 1}
+              </Button>
+              <NestedInput
+                key={index}
+                onValueChange={(value: Attraction) =>
+                  handleFormInputs(
+                    "mustSeeAttractions",
+                    value,
+                    true,
+                    "attractions",
+                    index
+                  )
+                }
+                defaultValues={attraction}
+                index={index}
+              />
+            </div>
+            <Separator className={styles.separator} />
           </div>
-          <Separator className={styles.separator} />
-        </>
-      ))}
+        )
+      )}
       <div className={styles.attraction}>
         <Button
           variant={"secondary"}
@@ -178,42 +225,46 @@ export default function App() {
 
       {/* DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST DEJAVNOST */}
       <div className={styles.sectionDescription}>
-        <DescriptionInput onValueChange={(value: Activities) =>
-          handleFormInputs("activities", value, false, "description")
-        }
-          defaultValues={currentObject.mustSeeAttractions.description} />
+        <DescriptionInput
+          onValueChange={(value: Activities) =>
+            handleFormInputs("activities", value, false, "description")
+          }
+          defaultValues={currentObject.mustSeeAttractions?.description}
+        />
       </div>
-      {currentObject.activities.activities.map((attraction, index) => (
-        <>
-          <div className={styles.attraction}>
-            <Button
-              key={index + 1}
-              onClick={() => {
-                deleteAttribute(index, "activities", "activities");
-              }}
-              variant={"destructive"}
-              className={styles.deleteAttraction}
-            >
-              Odstrani dejavnost {index + 1}
-            </Button>
-            <NestedInput
-              key={index}
-              onValueChange={(value: Activity) =>
-                handleFormInputs(
-                  "activities",
-                  value,
-                  true,
-                  "activities",
-                  index
-                )
-              }
-              defaultValues={attraction}
-              index={index}
-            />
+      {currentObject.activities?.activities.map(
+        (attraction: any, index: any) => (
+          <div key={index}>
+            <div className={styles.attraction} key={index}>
+              <Button
+                key={index + 1}
+                onClick={() => {
+                  deleteAttribute(index, "activities", "activities");
+                }}
+                variant={"destructive"}
+                className={styles.deleteAttraction}
+              >
+                Odstrani dejavnost {index + 1}
+              </Button>
+              <NestedInput
+                key={index}
+                onValueChange={(value: Activity) =>
+                  handleFormInputs(
+                    "activities",
+                    value,
+                    true,
+                    "activities",
+                    index
+                  )
+                }
+                defaultValues={attraction}
+                index={index}
+              />
+            </div>
+            <Separator className={styles.separator} />
           </div>
-          <Separator className={styles.separator} />
-        </>
-      ))}
+        )
+      )}
       <div className={styles.attraction}>
         <Button
           variant={"secondary"}
@@ -226,7 +277,11 @@ export default function App() {
       </div>
       <Separator className={styles.separator} />
 
-
+      <div className={styles.attraction}>
+        <Button variant={"default"} onClick={onCreation}>
+          Shrani destinacijo
+        </Button>
+      </div>
     </>
   );
 }

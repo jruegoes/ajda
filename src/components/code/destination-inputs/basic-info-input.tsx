@@ -9,15 +9,16 @@ import { Button } from "@/components/ui/button";
 import styles from './destination-inputs.module.css'
 import { Textarea } from "@/components/ui/textarea";
 
-type CountryInputs = {
+type BasicInfoInputs = {
   country: string;
   language: string;
   currency: string;
   cityArea: string;
   description: string;
+  image: string;
 };
 
-export default function CountryInput(props: {
+export default function BasicInfoInput(props: {
   onValueChange: (value: any) => void;
   defaultValues?: any;
 }) {
@@ -26,17 +27,18 @@ export default function CountryInput(props: {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<CountryInputs>();
-  const onSubmit: SubmitHandler<CountryInputs> = (data) => {
+  } = useForm<BasicInfoInputs>();
+  const onSubmit: SubmitHandler<BasicInfoInputs> = (data) => {
     props.onValueChange(data);
   };
   const handleValueFromList = (
     value: string,
-    formInput: keyof CountryInputs
+    formInput: keyof BasicInfoInputs
   ) => {
     setValue(formInput, value);
   };
 
+  console.log('basicinfo', props.defaultValues)
   return (
     <div className={styles.container}>
       <div className={styles.title}>Dodaj podatke o državi in mestu destinacije</div>
@@ -50,7 +52,7 @@ export default function CountryInput(props: {
               handleValueFromList(value, "country")
             }
             list={countries}
-            defaultValue={props.defaultValues.country}
+            defaultValue={props.defaultValues?.country ?? 'slovenia'}
           />
         </div>
 
@@ -61,7 +63,7 @@ export default function CountryInput(props: {
               handleValueFromList(value, "language")
             }
             list={languages}
-            defaultValue={props.defaultValues.language}
+            defaultValue={props.defaultValues?.language ?? 'English'}
           />
         </div>
 
@@ -72,7 +74,7 @@ export default function CountryInput(props: {
               handleValueFromList(value, "currency")
             }
             list={currencies}
-            defaultValue={props.defaultValues.currency}
+            defaultValue={props.defaultValues?.currency ?? 'EUR'}
           />
         </div>
 
@@ -82,7 +84,7 @@ export default function CountryInput(props: {
             className={styles.input}
             placeholder="mesto oz. destinacija"
             {...register("cityArea", { required: true })}
-            defaultValue={props.defaultValues.cityArea}
+            defaultValue={props.defaultValues?.cityArea ?? ''}
           />
 
           {errors.cityArea && <span>Vpiši mesto oz. ime destinacije</span>}
@@ -93,7 +95,18 @@ export default function CountryInput(props: {
             className={styles.input}
             placeholder="opis"
             {...register("description", { required: true })}
-            defaultValue={props.defaultValues.description}
+            defaultValue={props.defaultValues?.description ?? ''}
+          />
+
+          {errors.cityArea && <span>Vpiši mesto oz. ime destinacije</span>}
+        </div>
+        <div className={styles.inputContainer}>
+          <div>Link do slike</div>
+          <Input
+            className={styles.input}
+            placeholder="link do slike"
+            {...register("image", { required: true })}
+            defaultValue={props.defaultValues?.image ?? ''}
           />
 
           {errors.cityArea && <span>Vpiši mesto oz. ime destinacije</span>}

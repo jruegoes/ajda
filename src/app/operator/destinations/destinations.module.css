@@ -1,0 +1,66 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.destination {
+    padding: 20px;
+}
+
+.eachDestination {
+    padding: 10px;
+    margin: 5px;
+    width: 1000px;
+    height: 340px;
+    background: #fca311;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    color: white;
+    border-radius: 35px;
+    gap: 20px;
+}
+
+.eachDestination:hover {
+    background: #ffba08;
+    cursor: pointer;
+}
+
+
+.addDestination {
+    padding: 10px;
+    margin: 5px;
+    width: 300px;
+    height: 50px;
+    background: #006d77;
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    border-radius: 50px;
+}
+
+.addDestination:hover {
+    background: #83c5be;
+    cursor: pointer;
+}
+
+.title {
+    font-size: 44px;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    font-weight: 800;
+    color: #48cae4;
+}
+
+.picture{
+    border-radius: 30px;
+    width: 100%; /* Ensure the image takes the full width of its container */
+  height: 100%; /* Ensure the image takes the full height of its container */
+  object-fit: cover; /* Maintain aspect ratio; cover the entire container */
+}
