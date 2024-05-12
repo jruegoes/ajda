@@ -12,7 +12,7 @@ import {
   defaultValues,
   defaultValuesEmpty,
 } from "@/lib/constants/interfaces";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import styles from "./add-destination.module.css";
 import DescriptionInput from "@/components/code/destination-inputs/description-input";
@@ -22,16 +22,29 @@ import {
   getDestinations,
 } from "@/components/firebase/firebase";
 import { usePathname, useRouter } from "next/navigation";
+import { auth } from "@/lib/firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function DestinationModule(props: {
   id?: string;
   value?: Destination;
 }) {
+  const [user] = useAuthState(auth);
+  const router = useRouter();
+  const userSession = sessionStorage.getItem("user");
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!user && !userSession) {
+      router.push("/operator");
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
+
   const [currentObject, setCurrentObject] = useState(
     props.value ?? defaultValuesEmpty
   );
 
-  const router = useRouter();
   const pathname = usePathname();
 
   const goBack = () => {
@@ -141,6 +154,10 @@ export default function DestinationModule(props: {
   //     ),
   //   }));
   // };
+
+  if (loading) {
+    return <div></div>;
+  }
 
   return (
     <>
